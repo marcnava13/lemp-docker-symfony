@@ -1,0 +1,44 @@
+server {
+	listen 80;
+	
+	# this path MUST be exactly as docker-compose.fpm.volumes,
+	# even if it doesn't exists in this dock.
+	#root /usr/share/nginx/html;
+	root /var/www/web;
+	
+	index app.php;
+	
+	server_name 172.17.0.1;
+
+	location / {
+		try_files $uri $uri/ /app.php?$query_string;
+	}
+
+	location ~ ^/(app|app_dev|config)\.php(/|$) {
+        fastcgi_pass 172.17.0.1:9000;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param  HTTPS off;
+    }
+
+	location ~ \.php$ {
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		fastcgi_pass 172.17.0.1:9000;
+		fastcgi_index app.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		#fastcgi_param  SERVER_PORT        $http_x_forwarded_port;
+		include fastcgi_params;
+	}
+
+	location ~* ^.+\.(jpg|jpeg|gif|png|ico|swf|flv|woff)$ {
+		access_log off;
+		expires 9d;
+	}
+
+	location ~* ^.+\.(css|js)$ {
+		access_log off;
+		expires 1d;
+	}
+
+}
