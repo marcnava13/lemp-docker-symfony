@@ -33,5 +33,7 @@ $ docker-compose up -d
 
 You are done, you can visit your application on the following URL: `http://localhost:8080`
 
+![](doc/images/welcome.png)
+
 [Docker]:                      https://www.docker.io/
 [Compose]:                     http://docs.docker.com/compose/install/
